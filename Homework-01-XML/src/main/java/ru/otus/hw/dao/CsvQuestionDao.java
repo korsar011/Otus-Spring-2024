@@ -24,11 +24,7 @@ public class CsvQuestionDao implements QuestionDao {
                 .getClassLoader()
                 .getResourceAsStream(fileNameProvider.getTestFileName());
 
-        if (inputStream == null) {
-            throw new NullPointerException("File not found: " + fileNameProvider.getTestFileName());
-        }
-
-        try (InputStreamReader reader = new InputStreamReader(inputStream)) {
+       try (InputStreamReader reader = new InputStreamReader(inputStream)) {
             List<QuestionDto> questionDtos = new CsvToBeanBuilder<QuestionDto>(reader)
                     .withType(QuestionDto.class)
                     .withSkipLines(1)
@@ -39,9 +35,10 @@ public class CsvQuestionDao implements QuestionDao {
             return questionDtos.stream()
                     .map(QuestionDto::toDomainObject)
                     .collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            throw new QuestionReadException("Файл не найден: " + fileNameProvider.getTestFileName(), e);
         } catch (Exception e) {
-            throw new QuestionReadException("Error reading questions from CSV", e);
+            throw new QuestionReadException("Ошибка при чтении вопросов из CSV", e);
         }
     }
-
 }
