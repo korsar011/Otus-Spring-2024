@@ -2,11 +2,13 @@ package ru.otus.hw.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.hw.dao.QuestionDao;
 import ru.otus.hw.domain.Answer;
 import ru.otus.hw.domain.Question;
@@ -15,6 +17,7 @@ import ru.otus.hw.domain.Question;
 import java.util.Collections;
 import java.util.List;
 
+@ExtendWith(MockitoExtension.class)
 public class TestServiceImplTest {
 
     @InjectMocks
@@ -28,7 +31,7 @@ public class TestServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+
     }
 
     @Test
