@@ -1,0 +1,8 @@
+# Добавить сюда своих вопросов. Эту строку надо пропустить при настройке CsvToBean (withSkipLines)
+Is the Earth flat?;No, the Earth is an oblate spheroid%true|Yes, it's flat like a pancake%false|Maybe, we can't be sure%false
+What is the capital of Japan?;Tokyo%true|Beijing%false|Seoul%false
+Who wrote "The Great Gatsby"?;F. Scott Fitzgerald%true|Ernest Hemingway%false|Mark Twain%false
+What is the chemical symbol for water?;H2O%true|CO2%false|NaCl%false
+What is the largest ocean on Earth?;Pacific Ocean%true|Atlantic Ocean%false|Indian Ocean%false
+What is the capital of France?;Paris%true|Berlin%false|Madrid%false
+Who wrote "Romeo and Juliet"?;William Shakespeare%true|Jane Austen%false|Charles Dickens%false
