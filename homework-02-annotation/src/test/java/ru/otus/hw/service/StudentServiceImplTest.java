@@ -20,10 +20,6 @@ public class StudentServiceImplTest {
     @InjectMocks
     private StudentServiceImpl studentService;
 
-    @BeforeEach
-    void setUp() {
-    }
-
     @Test
     void determineCurrentStudent_ReturnsCorrectStudent() {
         String firstName = "John";
