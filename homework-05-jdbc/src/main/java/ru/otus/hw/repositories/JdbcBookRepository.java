@@ -32,7 +32,7 @@ public class JdbcBookRepository implements BookRepository {
                 "a.id as author_id, a.full_name as full_name, " +
                 "g.id as genre_id, g.name as name " +
                 "FROM books b " +
-                "JOIN authors a on b.author_id = a.id " +
+                "INNER JOIN authors a on b.author_id = a.id " +
                 "LEFT JOIN genres g on b.genre_id = g.id " +
                 "WHERE b.id = :id";
         try {
