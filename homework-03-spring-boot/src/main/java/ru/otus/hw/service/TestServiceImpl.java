@@ -37,8 +37,9 @@ public class TestServiceImpl implements TestService {
     private void askQuestion(Question question, TestResult testResult) {
         ioService.printLine(question.text());
         printAnswers(question);
-        int answerIndex = ioService.readIntForRange(1, question.answers().size(),
-                "Please, enter the number of the correct answer");
+        int answerIndex = ioService.readIntForRangeWithPromptLocalized(1, question.answers().size(),
+                "TestService.enter.correct.answer.number",
+                "TestService.invalid.answer");
         boolean isAnswerValid = question.answers().get(answerIndex - 1).isCorrect();
         testResult.applyAnswer(question, isAnswerValid);
     }
