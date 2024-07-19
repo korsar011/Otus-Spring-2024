@@ -1,4 +1,4 @@
-package ru.otus.hw.repositories;
+package ru.otus.hw.services;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.models.Book;
-import ru.otus.hw.services.BookService;
+import ru.otus.hw.repositories.BookRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 @SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class BookServiceImplTest {
 
     @Autowired
@@ -29,6 +28,7 @@ class BookServiceImplTest {
 
     @DisplayName("должен корректно сохранять новую книгу")
     @Test
+    @DirtiesContext
     void shouldSaveNewBook() {
         var book = bookService.insert("New Book", 1L, 1L);
         assertThat(book.getId()).isNotNull();
@@ -40,6 +40,7 @@ class BookServiceImplTest {
 
     @DisplayName("должен корректно обновлять книгу")
     @Test
+    @DirtiesContext
     void shouldUpdateBook() {
         var book = bookService.update(1L, "Updated Title", 1L, 1L);
         assertThat(book.getTitle()).isEqualTo("Updated Title");
@@ -58,6 +59,7 @@ class BookServiceImplTest {
 
     @DisplayName("должен удалять книгу по id")
     @Test
+    @DirtiesContext
     void shouldDeleteBookById() {
         bookService.deleteById(1L);
         Optional<Book> book = bookRepository.findById(1L);

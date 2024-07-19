@@ -3,19 +3,19 @@ package ru.otus.hw.repositories;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Comment;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
-@Transactional
+@RequiredArgsConstructor
 public class JpaCommentRepository implements CommentRepository {
 
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     @Override
     public Comment save(Comment comment) {
@@ -38,23 +38,23 @@ public class JpaCommentRepository implements CommentRepository {
     @Override
     public Optional<Comment> findById(Long id) {
         EntityGraph<?> entityGraph = em.getEntityGraph("comment-book-entity-graph");
-        Comment comment = em.createQuery("SELECT c FROM Comment c WHERE c.id = :id", Comment.class)
-                .setParameter("id", id)
-                .setHint("jakarta.persistence.fetchgraph", entityGraph)
-                .getResultList()
-                .stream()
-                .findFirst()
-                .orElse(null); // Если комментарий не найден, вернем null
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("jakarta.persistence.fetchgraph", entityGraph);
 
+        Comment comment = em.find(Comment.class, id, hints);
         return Optional.ofNullable(comment);
     }
 
     @Override
     public List<Comment> findByBookId(Long bookId) {
-        EntityGraph<?> entityGraph = em.getEntityGraph("comment-book-entity-graph");
+        Book book = em.find(Book.class, bookId);
+
+        if (book == null) {
+            return Collections.emptyList();
+        }
+
         return em.createQuery("SELECT c FROM Comment c WHERE c.book.id = :bookId", Comment.class)
                 .setParameter("bookId", bookId)
-                .setHint("jakarta.persistence.fetchgraph", entityGraph)
                 .getResultList();
     }
 }

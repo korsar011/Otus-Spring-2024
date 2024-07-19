@@ -1,4 +1,4 @@
-package ru.otus.hw.repositories;
+package ru.otus.hw.services;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.models.Comment;
+import ru.otus.hw.repositories.CommentRepository;
 import ru.otus.hw.services.CommentService;
 
 import java.util.List;

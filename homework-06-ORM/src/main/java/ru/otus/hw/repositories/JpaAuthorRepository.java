@@ -2,6 +2,9 @@ package ru.otus.hw.repositories;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.otus.hw.models.Author;
 
@@ -9,11 +12,12 @@ import ru.otus.hw.models.Author;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Repository
 public class JpaAuthorRepository implements AuthorRepository {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Override
     public List<Author> findAll() {
