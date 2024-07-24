@@ -10,7 +10,7 @@ import ru.otus.hw.domain.Student;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest (classes = {StudentServiceImpl.class}, properties = {"spring.shell.interactive.enabled=false"})
+@SpringBootTest (classes = {StudentServiceImpl.class})
 public class StudentServiceImplTest {
 
     @Autowired

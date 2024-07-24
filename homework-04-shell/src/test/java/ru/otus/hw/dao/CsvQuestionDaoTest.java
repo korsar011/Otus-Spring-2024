@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = {CsvQuestionDao.class, ApplicationConfig.class}, properties = {"spring.shell.interactive.enabled=false"})
+@SpringBootTest(classes = {CsvQuestionDao.class})
 public class CsvQuestionDaoTest {
 
     @Autowired
