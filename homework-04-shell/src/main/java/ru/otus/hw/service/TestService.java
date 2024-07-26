@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface TestService {
     TestResult executeTestFor(Student student);
+
     List<String> getCorrectAnswers();
 }
