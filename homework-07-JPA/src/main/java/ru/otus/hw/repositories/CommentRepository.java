@@ -8,6 +8,6 @@ import ru.otus.hw.models.Comment;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    @Query("SELECT DISTINCT c FROM Comment c JOIN FETCH c.book WHERE c.book.id = :bookId")
+    @Query("SELECT c FROM Comment c WHERE c.book.id = :bookId")
     List<Comment> findByBookId(@Param("bookId") Long bookId);
 }
