@@ -6,7 +6,14 @@ import ru.otus.hw.models.Comment;
 @Component
 public class CommentConverter {
     public String commentToString(Comment comment) {
-        return "Id: %d, Text: %s, Book: %s"
-                .formatted(comment.getId(), comment.getContent(), comment.getBook().getTitle());
+        if (comment == null) {
+            return "Comment not found";
+        }
+        String bookTitle = comment.getBook() != null ?
+                comment.getBook().getTitle() : "Unknown book";
+        return "Id: %s, Text: %s, Book: %s".formatted(
+                comment.getId(),
+                comment.getContent(),
+                bookTitle);
     }
 }

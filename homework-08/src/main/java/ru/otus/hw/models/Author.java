@@ -1,11 +1,7 @@
 package ru.otus.hw.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,26 +11,27 @@ import java.util.Objects;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "authors")
-@Entity
+@Document(collection = "authors")
 public class Author {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
-    @Column(name = "full_name")
+    @Id
+    private String id;
+
     private String fullName;
+
+    public Author(String fullName) {
+        this.fullName = fullName;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-
         if (!(o instanceof Author author)) {
             return false;
         }
-                return Objects.equals(getId(), author.getId());
+        return Objects.equals(getId(), author.getId());
     }
 
     @Override
@@ -49,5 +46,4 @@ public class Author {
                 ", fullName='" + fullName + '\'' +
                 '}';
     }
-
 }

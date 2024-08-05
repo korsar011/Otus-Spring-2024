@@ -17,14 +17,14 @@ public class CommentCommands {
     private final CommentConverter commentConverter;
 
     @ShellMethod(value = "Find comment by id", key = "fc")
-    public String findCommentById(long commentId) {
+    public String findCommentById(String commentId) {
         return commentService.findCommentById(commentId)
                 .map(commentConverter::commentToString)
                 .orElse("Comment not found");
     }
 
     @ShellMethod(value = "Find all comments by book id", key = "fac")
-    public String findAllCommentsByBookId(long bookId) {
+    public String findAllCommentsByBookId(String bookId) {
         return commentService.findAllCommentsByBookId(bookId).stream()
                 .map(commentConverter::commentToString)
                 .collect(Collectors.joining("," + System.lineSeparator()));
