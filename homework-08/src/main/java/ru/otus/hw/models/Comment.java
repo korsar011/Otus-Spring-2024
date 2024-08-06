@@ -26,6 +26,11 @@ public class Comment {
         this.book = book;
     }
 
+    public Comment(String content, Book book) {
+        this.content = content;
+        this.book = book;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
