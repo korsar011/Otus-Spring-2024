@@ -25,35 +25,29 @@ public class BookServiceImpl implements BookService {
 
     private final CommentRepository commentRepository;
 
-    @Transactional(readOnly = true)
     @Override
     public Optional<Book> findById(String id) {
         return bookRepository.findById(id);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
 
-    @Transactional
     @Override
     public Book insert(String title, String authorId, String genreId) {
         return save(null, title, authorId, genreId);
     }
 
-    @Transactional
     @Override
     public Book update(String id, String title, String authorId, String genreId) {
         return save(id, title, authorId, genreId);
     }
 
-    @Transactional
     @Override
     public void deleteById(String id) {
-        List<Comment> comments = commentRepository.findByBookId(id);
-        commentRepository.deleteAll(comments);
+        commentRepository.deleteByBookId(id);
         bookRepository.deleteById(id);
     }
 

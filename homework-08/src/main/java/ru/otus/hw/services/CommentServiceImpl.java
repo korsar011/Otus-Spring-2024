@@ -18,7 +18,6 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
-    @Transactional
     @Override
     public Comment addComment(String bookId, String content) {
         var book = bookRepository.findById(bookId)
@@ -29,19 +28,16 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.save(comment);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Optional<Comment> findCommentById(String commentId) {
         return commentRepository.findById(commentId);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Comment> findAllCommentsByBookId(String bookId) {
         return commentRepository.findByBookId(bookId);
     }
 
-    @Transactional
     @Override
     public Comment updateComment(String commentId, String content) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
@@ -55,7 +51,6 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
-    @Transactional
     @Override
     public void deleteCommentById(String commentId) {
         commentRepository.deleteById(commentId);
