@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authors List</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Authors List</h1>
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="author : ${authors}">
+            <td th:text="${author.id}">1</td>
+            <td th:text="${author.fullName}">Author Name</td>
+            <td class="action-buttons">
+                <a th:href="@{/library/authors/edit(id=${author.id})}" class="edit-button">Edit</a>
+                <form th:action="@{/library/authors/delete}" method="post" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${author.id}"/>
+                    <button type="submit" class="delete-button">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="button-group">
+        <a href="/library/authors/new" class="button">Add New Author</a>
+        <a href="/" class="button">Home</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${author.id == null ? 'Add New Author' : 'Edit Author'}">Author Form</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1 th:if="${author.id == null || author.id == 0}">Add New Author</h1>
+    <h1 th:if="${author.id != null && author.id != 0}">Edit Author</h1>
+    <form th:action="@{/library/authors}" th:object="${author}" method="post" class="form">
+        <input type="hidden" th:field="*{id}"/>
+        <div class="form-group">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" th:field="*{fullName}" class="form-control" required="required"/>
+        </div>
+        <button type="submit" class="submit-button">Save</button>
+    </form>
+    <div class="button-group">
+        <a href="/library/authors" class="button">Back to Author List</a>
+        <a href="/" class="button">Home</a>
+    </div>
+</div>
+</body>
+</html>
