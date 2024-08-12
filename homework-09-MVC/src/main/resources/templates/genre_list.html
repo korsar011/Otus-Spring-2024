@@ -20,8 +20,8 @@
         <tr th:each="genre : ${genres}">
             <td th:text="${genre.name}">Genre Name</td>
             <td class="action-buttons">
-                <a th:href="@{/library/genres/edit(id=${genre.id})}" class="edit-button">Edit</a>
-                <form th:action="@{/library/genres/delete}" method="post" style="display:inline;">
+                <a th:href="@{/library/genres/edit/{id}(id=${genre.id})}" class="edit-button">Edit</a>
+                <form th:action="@{/library/genres/delete/{id}(id=${genre.id})}" method="post" style="display:inline;">
                     <input type="hidden" name="id" th:value="${genre.id}"/>
                     <button type="submit" class="delete-button">Delete</button>
                 </form>

@@ -22,8 +22,8 @@
             <td th:text="${author.id}">1</td>
             <td th:text="${author.fullName}">Author Name</td>
             <td class="action-buttons">
-                <a th:href="@{/library/authors/edit(id=${author.id})}" class="edit-button">Edit</a>
-                <form th:action="@{/library/authors/delete}" method="post" style="display:inline;">
+                <a th:href="@{/library/authors/edit/{id}(id=${author.id})}" class="edit-button">Edit</a>
+                <form th:action="@{/library/authors/delete/{id}(id=${author.id})}" method="post" style="display:inline;">
                     <input type="hidden" name="id" th:value="${author.id}"/>
                     <button type="submit" class="delete-button">Delete</button>
                 </form>

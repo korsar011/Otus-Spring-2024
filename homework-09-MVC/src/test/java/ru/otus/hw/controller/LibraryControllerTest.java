@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@WebMvcTest(LibraryController.class)
+@WebMvcTest({AuthorController.class, BookController.class, CommentController.class, GenreController.class})
 public class LibraryControllerTest {
 
     @Autowired
@@ -71,7 +71,7 @@ public class LibraryControllerTest {
         when(authorService.findAll()).thenReturn(List.of(new Author(1L, "Author Name")));
         when(genreService.findAll()).thenReturn(List.of(new Genre(1L, "Genre Name")));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/library/books/edit")
+        mockMvc.perform(MockMvcRequestBuilders.get("/library/books/edit/{id}", 1L)
                         .param("id", String.valueOf(book.getId())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("book_form"))
@@ -102,7 +102,7 @@ public class LibraryControllerTest {
 
         when(authorService.findById(anyLong())).thenReturn(author);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/library/authors/edit")
+        mockMvc.perform(MockMvcRequestBuilders.get("/library/authors/edit/{id}", 1L)
                         .param("id", String.valueOf(author.getId())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("author_form"))
@@ -130,7 +130,7 @@ public class LibraryControllerTest {
 
         when(genreService.findById(anyLong())).thenReturn(java.util.Optional.of(genre));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/library/genres/edit")
+        mockMvc.perform(MockMvcRequestBuilders.get("/library/genres/edit/{id}", 1L)
                         .param("id", String.valueOf(genre.getId())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("genre_form"))

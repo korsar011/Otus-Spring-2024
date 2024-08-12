@@ -10,7 +10,7 @@
 <div class="form-container">
     <h1 th:if="${book.id == null}">Add New Book</h1>
     <h1 th:if="${book.id != null}">Edit Book</h1>
-    <form th:action="@{/library/books/edit}" th:object="${book}" method="post" class="form">
+    <form th:action="@{/library/books/{id}(id=${book.id})}" th:object="${book}" method="post" class="form">
         <input type="hidden" th:field="*{id}"/>
         <div class="form-group">
             <label for="title">Title:</label>

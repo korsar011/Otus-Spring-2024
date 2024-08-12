@@ -28,8 +28,8 @@
                 <a th:href="@{/library/comments/by-book/{bookId}(bookId=${book.id})}" class="button">View Comments</a>
             </td>
             <td class="action-buttons">
-                <a th:href="@{/library/books/edit(id=${book.id})}" class="edit-button">Edit</a>
-                <form th:action="@{/library/books/delete}" method="post" style="display:inline;">
+                <a th:href="@{/library/books/edit/{id}(id=${book.id})}" class="edit-button">Edit</a>
+                <form th:action="@{/library/books/delete/{id}(id=${book.id})}" method="post" style="display:inline;">
                     <input type="hidden" name="id" th:value="${book.id}"/>
                     <button type="submit" class="delete-button">Delete</button>
                 </form>
