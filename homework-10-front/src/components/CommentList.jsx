@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { getCommentsByBookId } from '../services/commentService';
 
 const CommentList = () => {
     const { bookId } = useParams();
@@ -8,10 +8,8 @@ const CommentList = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get(`/api/comments/by-book/${bookId}`)
-            .then(response => {
-                setComments(response.data);
-            })
+        getCommentsByBookId(bookId)
+            .then(response => setComments(response.data))
             .catch(error => {
                 setError('Error fetching comments.');
                 console.error('Error fetching comments:', error);

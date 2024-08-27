@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import {useParams, useNavigate, Link} from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { getAuthorById, createAuthor, updateAuthor } from '../services/authorService';
 
 function AuthorDetail() {
     const [author, setAuthor] = useState(null);
@@ -13,7 +13,7 @@ function AuthorDetail() {
             setIsNew(true);
             setAuthor({ fullName: '' });
         } else {
-            axios.get(`/api/authors/${id}`)
+            getAuthorById(id)
                 .then(response => setAuthor(response.data))
                 .catch(error => console.error('Error fetching author:', error));
         }
@@ -21,8 +21,8 @@ function AuthorDetail() {
 
     function handleSubmit(event) {
         event.preventDefault();
-        const method = isNew ? 'post' : 'put';
-        axios[method](`/api/authors${isNew ? '' : `/${id}`}`, author)
+        const method = isNew ? createAuthor : updateAuthor;
+        method(isNew ? author : { ...author, id })
             .then(() => navigate('/authors'))
             .catch(error => console.error('Error saving author:', error));
     }

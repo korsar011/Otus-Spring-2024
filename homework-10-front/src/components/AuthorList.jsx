@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { getAuthors, deleteAuthor } from '../services/authorService';
 
 function AuthorList() {
     const [authors, setAuthors] = useState([]);
 
     useEffect(() => {
-        axios.get('/api/authors')
+        getAuthors()
             .then(response => setAuthors(response.data))
             .catch(error => console.error('Error fetching authors:', error));
     }, []);
+
+    function handleDelete(id) {
+        deleteAuthor(id)
+            .then(() => setAuthors(authors.filter(author => author.id !== id)))
+            .catch(error => console.error('Error deleting author:', error));
+    }
 
     return (
         <div className="container">
@@ -46,12 +52,6 @@ function AuthorList() {
             </div>
         </div>
     );
-
-    function handleDelete(id) {
-        axios.delete(`/api/authors/${id}`)
-            .then(() => setAuthors(authors.filter(author => author.id !== id)))
-            .catch(error => console.error('Error deleting author:', error));
-    }
 }
 
 export default AuthorList;

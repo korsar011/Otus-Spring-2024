@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { getBookById, createBook, updateBook } from '../services/bookService';
+import { getAuthors } from '../services/authorService';
+import { getGenres } from '../services/genreService';
 
 const BookForm = () => {
     const { id } = useParams();
@@ -11,16 +13,16 @@ const BookForm = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('/api/authors')
+        getAuthors()
             .then(response => setAuthors(response.data))
             .catch(error => console.error('Error fetching authors:', error));
 
-        axios.get('/api/genres')
+        getGenres()
             .then(response => setGenres(response.data))
             .catch(error => console.error('Error fetching genres:', error));
 
         if (id) {
-            axios.get(`/api/books/${id}`)
+            getBookById(id)
                 .then(response => setBook(response.data))
                 .catch(error => console.error('Error fetching book:', error));
         }
@@ -30,12 +32,11 @@ const BookForm = () => {
         const { name, value } = e.target;
         setBook(prevBook => ({ ...prevBook, [name]: value }));
     };
-
     const handleSubmit = (e) => {
         e.preventDefault();
         const request = id
-            ? axios.put(`/api/books/${id}`, book)
-            : axios.post('/api/books', book);
+            ? updateBook(id, book)
+            : createBook(book);
 
         request
             .then(() => navigate('/books'))

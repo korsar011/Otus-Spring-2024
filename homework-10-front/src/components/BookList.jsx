@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { getBooks, deleteBook } from '../services/bookService';
 
 const BookList = () => {
     const [books, setBooks] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get('/api/books')
-            .then(response => {
-                setBooks(response.data);
-            })
+        getBooks()
+            .then(response => setBooks(response.data))
             .catch(error => {
                 setError('Error fetching books.');
                 console.error('Error fetching books:', error);
             });
     }, []);
+
+    const handleDelete = (id) => {
+        if (window.confirm('Are you sure you want to delete this book?')) {
+            deleteBook(id)
+                .then(() => setBooks(books.filter(b => b.id !== id)))
+                .catch(error => console.error('Error deleting book:', error));
+        }
+    };
 
     if (error) {
         return <div className="container"><p>{error}</p></div>;
@@ -47,13 +53,7 @@ const BookList = () => {
                             <td className="action-buttons">
                                 <Link to={`/books/${book.id}/edit`} className="edit-button">Edit</Link>
                                 <button
-                                    onClick={() => {
-                                        if (window.confirm('Are you sure you want to delete this book?')) {
-                                            axios.delete(`/api/books/${book.id}`)
-                                                .then(() => setBooks(books.filter(b => b.id !== book.id)))
-                                                .catch(error => console.error('Error deleting book:', error));
-                                        }
-                                    }}
+                                    onClick={() => handleDelete(book.id)}
                                     className="delete-button"
                                 >
                                     Delete

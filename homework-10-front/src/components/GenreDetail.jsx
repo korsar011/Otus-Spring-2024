@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import {useParams, useNavigate, Link} from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { getGenreById, createGenre, updateGenre } from '../services/genreService';
 
 function GenreDetail() {
     const [genre, setGenre] = useState(null);
@@ -13,7 +13,7 @@ function GenreDetail() {
             setIsNew(true);
             setGenre({ name: '' });
         } else {
-            axios.get(`/api/genres/${id}`)
+            getGenreById(id)
                 .then(response => setGenre(response.data))
                 .catch(error => console.error('Error fetching genre:', error));
         }
@@ -21,8 +21,8 @@ function GenreDetail() {
 
     function handleSubmit(event) {
         event.preventDefault();
-        const method = isNew ? 'post' : 'put';
-        axios[method](`/api/genres${isNew ? '' : `/${id}`}`, genre)
+        const method = isNew ? createGenre : updateGenre;
+        method(isNew ? genre : { ...genre, id })
             .then(() => navigate('/genres'))
             .catch(error => console.error('Error saving genre:', error));
     }

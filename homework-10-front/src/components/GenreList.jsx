@@ -1,15 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { getGenres, deleteGenre } from '../services/genreService';
 
 function GenreList() {
     const [genres, setGenres] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get('/api/genres')
+        getGenres()
             .then(response => setGenres(response.data))
-            .catch(error => console.error('Error fetching genres:', error));
+            .catch(error => {
+                setError('Error fetching genres.');
+                console.error('Error fetching genres:', error);
+            });
     }, []);
+
+    const handleDelete = (id) => {
+        if (window.confirm('Are you sure you want to delete this genre?')) {
+            deleteGenre(id)
+                .then(() => setGenres(genres.filter(genre => genre.id !== id)))
+                .catch(error => console.error('Error deleting genre:', error));
+        }
+    };
+
+    if (error) {
+        return <div className="container"><p>{error}</p></div>;
+    }
 
     return (
         <div className="container">
@@ -46,12 +62,6 @@ function GenreList() {
             </div>
         </div>
     );
-
-    function handleDelete(id) {
-        axios.delete(`/api/genres/${id}`)
-            .then(() => setGenres(genres.filter(genre => genre.id !== id)))
-            .catch(error => console.error('Error deleting genre:', error));
-    }
 }
 
 export default GenreList;

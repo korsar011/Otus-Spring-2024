@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { getBookById, deleteBook } from '../services/bookService';
 
 const BookDetail = () => {
     const { id } = useParams();
@@ -8,14 +8,14 @@ const BookDetail = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(`/api/books/${id}`)
+        getBookById(id)
             .then(response => setBook(response.data))
             .catch(error => console.error('Error fetching book:', error));
     }, [id]);
 
     const handleDelete = () => {
         if (window.confirm('Are you sure you want to delete this book?')) {
-            axios.delete(`/api/books/${id}`)
+            deleteBook(id)
                 .then(() => navigate('/books'))
                 .catch(error => console.error('Error deleting book:', error));
         }
