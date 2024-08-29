@@ -6,4 +6,8 @@ import ru.otus.hw.models.Book;
 
 public interface BookRepository extends ReactiveMongoRepository<Book, String> {
     Mono<Book> findById(String id);
+
+    Mono<Long> countByAuthorId(String authorId);
+
+    Mono<Long> countByGenreId(String authorId);
 }

@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.hw.exceptions.EntityNotFoundException;
+import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
+import ru.otus.hw.models.Genre;
 import ru.otus.hw.repositories.AuthorRepository;
 import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.CommentRepository;
@@ -33,26 +35,32 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll();
     }
 
-    @Override
+        @Override
     public Mono<Book> insert(String title, String authorId, String genreId) {
-        return authorRepository.findById(authorId)
-                .flatMap(author -> genreRepository.findById(genreId)
-                        .map(genre -> new Book(title, author, genre))
-                        .flatMap(bookRepository::save));
+        return Mono.zip(
+                authorRepository.findById(authorId),
+                genreRepository.findById(genreId)
+        ).map(tuple -> {
+            Author author = tuple.getT1();
+            Genre genre = tuple.getT2();
+            return new Book(title, author, genre);
+        }).flatMap(bookRepository::save);
     }
 
     @Override
     public Mono<Book> update(String id, String title, String authorId, String genreId) {
         return bookRepository.findById(id)
-                .flatMap(book -> authorRepository.findById(authorId)
-                        .flatMap(author -> genreRepository.findById(genreId)
-                                .map(genre -> {
-                                    book.setTitle(title);
-                                    book.setAuthor(author);
-                                    book.setGenre(genre);
-                                    return book;
-                                })
-                                .flatMap(bookRepository::save)));
+                .flatMap(book -> Mono.zip(
+                        authorRepository.findById(authorId),
+                        genreRepository.findById(genreId)
+                ).map(tuple -> {
+                    Author author = tuple.getT1();
+                    Genre genre = tuple.getT2();
+                    book.setTitle(title);
+                    book.setAuthor(author);
+                    book.setGenre(genre);
+                    return book;
+                })).flatMap(bookRepository::save);
     }
 
     @Override
