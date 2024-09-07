@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genres List</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Genres List</h1>
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="genre : ${genres}">
+            <td th:text="${genre.name}">Genre Name</td>
+            <td class="action-buttons">
+                <a th:href="@{/library/genres/edit/{id}(id=${genre.id})}" class="edit-button">Edit</a>
+                <form th:action="@{/library/genres/delete/{id}(id=${genre.id})}" method="post" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${genre.id}"/>
+                    <button type="submit" class="delete-button">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="button-group">
+        <a href="/library/genres/new" class="button">Add New Genre</a>
+        <a href="/" class="button">Home</a>
+    </div>
+</div>
+</body>
+</html>
