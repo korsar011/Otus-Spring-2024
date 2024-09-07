@@ -30,7 +30,17 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Mono<Genre> save(Genre genre) {
-        return genreRepository.save(genre);
+        return genreRepository.save(genre)
+                .flatMap(savedGenre -> {
+                    if (genre.getId() != null) {
+                        return bookRepository.findAllByGenreId(genre.getId())
+                                .flatMap(book -> {
+                                    book.setGenre(savedGenre);
+                                    return bookRepository.save(book);
+                                }).then(Mono.just(savedGenre));
+                    }
+                    return Mono.just(savedGenre);
+                });
     }
 
     @Override

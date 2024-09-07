@@ -32,7 +32,18 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Mono<Author> save(Author author) {
-        return authorRepository.save(author);
+        return authorRepository.save(author)
+                .flatMap(savedAuthor -> {
+                    if (author.getId() != null) {
+                        return bookRepository.findByAuthorId(savedAuthor.getId())
+                                .flatMap(book -> {
+                                    book.setAuthor(savedAuthor);
+                                    return bookRepository.save(book);
+                                })
+                                .then(Mono.just(savedAuthor));
+                    }
+                    return Mono.just(savedAuthor);
+                });
     }
 
     @Override
