@@ -21,10 +21,24 @@ function AuthorDetail() {
 
     function handleSubmit(event) {
         event.preventDefault();
-        const method = isNew ? createAuthor : updateAuthor;
+
+        const method = isNew ? createAuthor : (author) => updateAuthor(id, author);
+
         method(isNew ? author : { ...author, id })
-            .then(() => navigate('/authors'))
-            .catch(error => console.error('Error saving author:', error));
+            .then(() => {
+                navigate('/authors');
+            })
+            .catch(error => {
+                console.error('Error saving author:', error);
+
+                if (error.response) {
+                    console.error('Error response:', error.response);
+                } else if (error.request) {
+                    console.error('No response received:', error.request);
+                } else {
+                    console.error('Request error:', error.message);
+                }
+            });
     }
 
     return (
