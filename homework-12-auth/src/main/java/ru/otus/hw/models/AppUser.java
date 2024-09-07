@@ -17,7 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +34,10 @@ public class User {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof User)) {
+        if (!(o instanceof AppUser)) {
             return false;
         }
-        User user = (User) o;
+        AppUser user = (AppUser) o;
         return Objects.equals(id, user.id);
     }
 
@@ -48,7 +48,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "AppUser{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 '}';
