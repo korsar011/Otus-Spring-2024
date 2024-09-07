@@ -65,8 +65,10 @@ public class EntityConverter {
         String mongoBookId = new ObjectId().toString();
         idMapRepository.save(new IdMap(null, book.getId(), mongoBookId, "Book"));
         return new BookMongo(book.getTitle(),
-                new AuthorMongo(idMapRepository.findMongoIdBySqlIdAndEntityType(book.getAuthor().getId(), "Author"), book.getAuthor().getFullName()),
-                new GenreMongo(idMapRepository.findMongoIdBySqlIdAndEntityType(book.getGenre().getId(), "Genre"), book.getGenre().getName()));
+                new AuthorMongo(idMapRepository.findMongoIdBySqlIdAndEntityType(
+                        book.getAuthor().getId(), "Author"), book.getAuthor().getFullName()),
+                new GenreMongo(idMapRepository.findMongoIdBySqlIdAndEntityType(
+                        book.getGenre().getId(), "Genre"), book.getGenre().getName()));
     }
 
     public CommentMongo convertComment(Comment comment) {
@@ -74,6 +76,7 @@ public class EntityConverter {
         idMapRepository.save(new IdMap(null, comment.getId(), mongoCommentId, "Comment"));
         return new CommentMongo(mongoCommentId,
                 comment.getContent(),
-                new BookMongo(idMapRepository.findMongoIdBySqlIdAndEntityType(comment.getBook().getId(), "Book"), comment.getBook().getTitle(), null, null));
+                new BookMongo(idMapRepository.findMongoIdBySqlIdAndEntityType(
+                        comment.getBook().getId(), "Book"), comment.getBook().getTitle(), null, null));
     }
 }

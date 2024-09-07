@@ -41,25 +41,32 @@ import ru.otus.hw.models.mongo.GenreMongo;
 @Configuration
 public class BatchConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(BatchConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BatchConfig.class);
 
     private static final int CHUNK_SIZE = 100;
 
-    @Autowired
-    private JobRepository jobRepository;
+    private final JobRepository jobRepository;
+
+    private final PlatformTransactionManager platformTransactionManager;
+
+    private final EntityManagerFactory entityManagerFactory;
+
+    private final MongoOperations mongoOperations;
+
+    private final EntityConverter entityConverter;
 
     @Autowired
-    private PlatformTransactionManager platformTransactionManager;
-
-    @Autowired
-    EntityManagerFactory entityManagerFactory;
-
-    @Autowired
-    MongoOperations mongoOperations;
-
-    @Autowired
-    private EntityConverter entityConverter;
-
+    public BatchConfig(JobRepository jobRepository,
+                       PlatformTransactionManager platformTransactionManager,
+                       EntityManagerFactory entityManagerFactory,
+                       MongoOperations mongoOperations,
+                       EntityConverter entityConverter) {
+        this.jobRepository = jobRepository;
+        this.platformTransactionManager = platformTransactionManager;
+        this.entityManagerFactory = entityManagerFactory;
+        this.mongoOperations = mongoOperations;
+        this.entityConverter = entityConverter;
+    }
 
     @Bean
     public ItemReader<Book> bookReader() {
@@ -142,7 +149,8 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job migrationJob(Step migrateBooksStep, Step migrateAuthorsStep, Step migrateGenresStep, Step migrateCommentsStep) {
+    public Job migrationJob(Step migrateBooksStep, Step migrateAuthorsStep,
+                            Step migrateGenresStep, Step migrateCommentsStep) {
         return new JobBuilder("migrationJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(migrateAuthorsStep)
@@ -152,19 +160,20 @@ public class BatchConfig {
                 .listener(new JobExecutionListener() {
                     @Override
                     public void beforeJob(@NonNull JobExecution jobExecution) {
-                        logger.info("Начало job");
+                        LOGGER.info("Начало job");
                     }
 
                     @Override
                     public void afterJob(@NonNull JobExecution jobExecution) {
-                        logger.info("Конец job");
+                        LOGGER.info("Конец job");
                     }
                 })
                 .build();
     }
 
     @Bean
-    public Step migrateBooksStep(ItemReader<Book> bookItemReader, ItemWriter<BookMongo> bookItemWriter, ItemProcessor<Book, BookMongo> bookItemProcessor) {
+    public Step migrateBooksStep(ItemReader<Book> bookItemReader, ItemWriter<BookMongo> bookItemWriter,
+                                 ItemProcessor<Book, BookMongo> bookItemProcessor) {
         return new StepBuilder("migrateBooksStep", jobRepository)
                 .<Book, BookMongo>chunk(CHUNK_SIZE, platformTransactionManager)
                 .reader(bookItemReader)
@@ -174,72 +183,73 @@ public class BatchConfig {
                 .listener(new ItemReadListener<Book>() {
                     @Override
                     public void beforeRead() {
-                        logger.info("Начало чтения");
+                        LOGGER.info("Начало чтения");
                     }
 
                     @Override
                     public void afterRead(@NonNull Book item) {
-                        logger.info("Конец чтения");
+                        LOGGER.info("Конец чтения");
                     }
 
                     @Override
                     public void onReadError(@NonNull Exception ex) {
-                        logger.info("Ошибка чтения");
+                        LOGGER.info("Ошибка чтения");
                     }
                 })
                 .listener(new ItemProcessListener<Book, BookMongo>() {
                     @Override
                     public void beforeProcess(@NonNull Book item) {
-                        logger.info("Начало обработки");
+                        LOGGER.info("Начало обработки");
                     }
 
                     @Override
                     public void afterProcess(@NonNull Book item, BookMongo result) {
-                        logger.info("Конец обработки");
+                        LOGGER.info("Конец обработки");
                     }
 
                     @Override
                     public void onProcessError(@NonNull Book item, @NonNull Exception e) {
-                        logger.info("Ошибка обработки");
+                        LOGGER.info("Ошибка обработки");
                     }
                 })
                 .listener(new ItemWriteListener<BookMongo>() {
                     @Override
                     public void beforeWrite(@NonNull Chunk<? extends BookMongo> items) {
-                        logger.info("Начало записи");
+                        LOGGER.info("Начало записи");
                     }
 
                     @Override
                     public void afterWrite(@NonNull Chunk<? extends BookMongo> items) {
-                        logger.info("Конец записи");
+                        LOGGER.info("Конец записи");
                     }
 
                     @Override
                     public void onWriteError(@NonNull Exception exception, @NonNull Chunk<? extends BookMongo> items) {
-                        logger.info("Ошибка записи");
+                        LOGGER.info("Ошибка записи");
                     }
                 })
                 .listener(new ChunkListener() {
                     @Override
                     public void beforeChunk(@NonNull ChunkContext chunkContext) {
-                        logger.info("Начало пачки");
+                        LOGGER.info("Начало пачки");
                     }
 
                     @Override
                     public void afterChunk(@NonNull ChunkContext chunkContext) {
-                        logger.info("Конец пачки");
+                        LOGGER.info("Конец пачки");
                     }
 
                     @Override
                     public void afterChunkError(@NonNull ChunkContext chunkContext) {
-                        logger.info("Ошибка пачки");
+                        LOGGER.info("Ошибка пачки");
                     }
                 })
                 .build();
     }
 
     @Bean
-    public Step migrateAuthorsStep(ItemReader<Author> authorItemReader, ItemWriter<AuthorMongo> authorItemWriter, ItemProcessor<Author, AuthorMongo> authorItemProcessor) {
+    public Step migrateAuthorsStep(ItemReader<Author> authorItemReader, ItemWriter<AuthorMongo> authorItemWriter,
+                                   ItemProcessor<Author, AuthorMongo> authorItemProcessor) {
         return new StepBuilder("migrateAuthorsStep", jobRepository)
                 .<Author, AuthorMongo>chunk(CHUNK_SIZE, platformTransactionManager)
                 .reader(authorItemReader)
@@ -249,7 +259,8 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step migrateGenresStep(ItemReader<Genre> genreItemReader, ItemWriter<GenreMongo> genreItemWriter, ItemProcessor<Genre, GenreMongo> genreItemProcessor) {
+    public Step migrateGenresStep(ItemReader<Genre> genreItemReader, ItemWriter<GenreMongo> genreItemWriter,
+                                  ItemProcessor<Genre, GenreMongo> genreItemProcessor) {
         return new StepBuilder("migrateGenresStep", jobRepository)
                 .<Genre, GenreMongo>chunk(CHUNK_SIZE, platformTransactionManager)
                 .reader(genreItemReader)
@@ -259,7 +270,8 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step migrateCommentsStep(ItemReader<Comment> commentItemReader, ItemWriter<CommentMongo> commentItemWriter, ItemProcessor<Comment, CommentMongo> commentItemProcessor) {
+    public Step migrateCommentsStep(ItemReader<Comment> commentItemReader, ItemWriter<CommentMongo> commentItemWriter,
+                                    ItemProcessor<Comment, CommentMongo> commentItemProcessor) {
         return new StepBuilder("migrateCommentsStep", jobRepository)
                 .<Comment, CommentMongo>chunk(CHUNK_SIZE, platformTransactionManager)
                 .reader(commentItemReader)
