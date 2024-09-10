@@ -2,7 +2,7 @@ package ru.otus.hw.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.otus.hw.repositories.IdMapRepository;
+import ru.otus.hw.repositories.inMemory.IdMapRepository;
 
 import java.util.List;
 
@@ -33,12 +33,12 @@ public class SqlToNosqlMapper {
     }
 
     private String getMongoId(Long sqlId, String entityType) {
-        return idMapRepository.findMongoIdBySqlIdAndEntityType(sqlId, entityType);
+        return idMapRepository.findMongoIdBySqlIdAndType(sqlId, entityType);
     }
 
     public List<String> getMongoIds(List<Long> sqlIds, String entityType) {
         return sqlIds.stream()
-                .map(sqlId -> idMapRepository.findMongoIdBySqlIdAndEntityType(sqlId, entityType))
+                .map(sqlId -> idMapRepository.findMongoIdBySqlIdAndType(sqlId, entityType))
                 .toList();
     }
 }
