@@ -18,18 +18,21 @@ function GenreList() {
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to delete this genre?')) {
             deleteGenre(id)
-                .then(() => setGenres(genres.filter(genre => genre.id !== id)))
-                .catch(error => console.error('Error deleting genre:', error));
+                .then(() => {
+                    setGenres(genres.filter(genre => genre.id !== id));
+                    setError(null); // Сброс ошибки при успешном удалении
+                })
+                .catch(error => {
+                    setError(error.message || 'Error deleting genre.'); // Установка сообщения об ошибке
+                    console.error('Error deleting genre:', error);
+                });
         }
     };
-
-    if (error) {
-        return <div className="container"><p>{error}</p></div>;
-    }
 
     return (
         <div className="container">
             <h1>Genres List</h1>
+            {error && <div className="error-message">{error}</div>} {/* Отображение сообщения об ошибке */}
             <table className="data-table">
                 <thead>
                 <tr>
@@ -39,21 +42,27 @@ function GenreList() {
                 </tr>
                 </thead>
                 <tbody>
-                {genres.map(genre => (
-                    <tr key={genre.id}>
-                        <td>{genre.id}</td>
-                        <td>{genre.name}</td>
-                        <td className="action-buttons">
-                            <Link to={`/genres/${genre.id}`} className="edit-button">Edit</Link>
-                            <button
-                                onClick={() => handleDelete(genre.id)}
-                                className="delete-button"
-                            >
-                                Delete
-                            </button>
-                        </td>
+                {genres.length > 0 ? (
+                    genres.map(genre => (
+                        <tr key={genre.id}>
+                            <td>{genre.id}</td>
+                            <td>{genre.name}</td>
+                            <td className="action-buttons">
+                                <Link to={`/genres/${genre.id}`} className="edit-button">Edit</Link>
+                                <button
+                                    onClick={() => handleDelete(genre.id)}
+                                    className="delete-button"
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))
+                ) : (
+                    <tr>
+                        <td colSpan="3">No genres available.</td>
                     </tr>
-                ))}
+                )}
                 </tbody>
             </table>
             <div className="button-group">

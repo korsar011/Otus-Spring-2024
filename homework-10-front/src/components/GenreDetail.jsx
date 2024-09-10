@@ -21,10 +21,20 @@ function GenreDetail() {
 
     function handleSubmit(event) {
         event.preventDefault();
-        const method = isNew ? createGenre : updateGenre;
+        const method = isNew ? createGenre : (genre) => updateGenre(id, genre);
+
         method(isNew ? genre : { ...genre, id })
             .then(() => navigate('/genres'))
-            .catch(error => console.error('Error saving genre:', error));
+            .catch(error => {
+                console.error('Error saving genre:', error);
+                if (error.response) {
+                    console.error('Error response:', error.response);
+                } else if (error.request) {
+                    console.error('No response received:', error.request);
+                } else {
+                    console.error('Request error:', error.message);
+                }
+            });
     }
 
     return (

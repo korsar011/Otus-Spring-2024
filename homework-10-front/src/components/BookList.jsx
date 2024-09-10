@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getBooks, deleteBook } from '../services/bookService';
+import {deleteBook, getBooks} from '../services/bookService';
+import { getAuthorById } from '../services/authorService';
+import { getGenreById } from '../services/genreService';
 
 const BookList = () => {
     const [books, setBooks] = useState([]);
@@ -8,7 +10,26 @@ const BookList = () => {
 
     useEffect(() => {
         getBooks()
-            .then(response => setBooks(response.data))
+            .then(response => {
+                const bookPromises = response.data.map(book =>
+                    Promise.all([
+                        getAuthorById(book.authorId),
+                        getGenreById(book.genreId)
+                    ])
+                        .then(([authorResponse, genreResponse]) => ({
+                            ...book,
+                            author: authorResponse.data,
+                            genre: genreResponse.data
+                        }))
+                );
+
+                Promise.all(bookPromises)
+                    .then(booksWithDetails => setBooks(booksWithDetails))
+                    .catch(error => {
+                        setError('Error fetching books.');
+                        console.error('Error fetching books:', error);
+                    });
+            })
             .catch(error => {
                 setError('Error fetching books.');
                 console.error('Error fetching books:', error);
