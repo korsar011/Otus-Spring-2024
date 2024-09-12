@@ -2,7 +2,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include:
+          - "health"
+          - "metrics"
+          - "logfile"
   endpoint:
     logfile:
       enabled: true
@@ -13,6 +16,7 @@ management:
   health:
     defaults:
       enabled: true
+
 spring:
   datasource:
     url: jdbc:h2:mem:maindb
@@ -25,8 +29,10 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
-
     show-sql: true
-  data:
-    rest:
-      base-path: /data-rest
+
+logging:
+  file:
+    name: logs/app.log
+  level:
+    root: INFO
