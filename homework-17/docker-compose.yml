@@ -1,6 +1,9 @@
 version: '3.8'
 services:
   backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     image: my-backend-image
     container_name: backend
     ports:
