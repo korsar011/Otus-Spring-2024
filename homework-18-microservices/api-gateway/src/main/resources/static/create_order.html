@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание Заказа</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center">Создание Заказа</h2>
+    <form id="orderForm">
+        <div class="form-group">
+            <label for="userSelect">Выберите пользователя</label>
+            <select class="form-control" id="userSelect" required>
+                <option value="">-- Выберите пользователя --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="productSelect">Выберите продукт</label>
+            <select class="form-control" id="productSelect" required>
+                <option value="">-- Выберите продукт --</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Создать Заказ</button>
+    </form>
+
+    <div id="userDetails" class="mt-4"></div>
+    <div id="productDetails" class="mt-4"></div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.get('/users', function (data) {
+            data.forEach(user => {
+                $('#userSelect').append(`<option value="${user.id}">${user.name}</option>`);
+            });
+        });
+
+        $.get('/products', function (data) {
+            data.forEach(product => {
+                $('#productSelect').append(`<option value="${product.id}">${product.name}</option>`);
+            });
+        });
+
+        $('#orderForm').on('submit', function (e) {
+            e.preventDefault();
+            const userId = $('#userSelect').val();
+            const productId = $('#productSelect').val();
+
+            const orderData = {
+                userId: userId,
+                productId: productId,
+            };
+
+            $.ajax({
+                url: '/orders',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(orderData),
+                success: function (response) {
+                    Swal.fire({
+                        title: 'Успех!',
+                        text: 'Заказ успешно создан!',
+                        icon: 'success'
+                    });
+                    $('#orderForm')[0].reset();
+                    $('#userDetails').empty();
+                    $('#productDetails').empty();
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Ошибка!',
+                        text: 'Не удалось создать заказ.',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+
+        $('#userSelect').change(function () {
+            const userId = $(this).val();
+            if (userId) {
+                $.get(`/users/${userId}`, function (user) {
+                    $('#userDetails').html(`
+                        <h5>Данные пользователя:</h5>
+                        <p><strong>Имя:</strong> ${user.name}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Телефон:</strong> ${user.phone}</p>
+                    `);
+                });
+            } else {
+                $('#userDetails').empty();
+            }
+        });
+
+        $('#productSelect').change(function () {
+            const productId = $(this).val();
+            if (productId) {
+                $.get(`/products/${productId}`, function (product) {
+                    $('#productDetails').html(`
+                        <h5>Данные продукта:</h5>
+                        <p><strong>Имя:</strong> ${product.name}</p>
+                        <p><strong>Описание:</strong> ${product.description}</p>
+                        <p><strong>Цена:</strong> ${product.price}</p>
+                    `);
+                });
+            } else {
+                $('#productDetails').empty();
+            }
+        });
+    });
+</script>
+</body>
+</html>
